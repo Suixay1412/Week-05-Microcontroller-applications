@@ -390,19 +390,19 @@ Memory analysis complete!
 | Memory Type | Free Size (bytes) | Total Size (bytes) |
 |-------------|-------------------|--------------------|
 | Internal SRAM | 380096 bytes | 520,192 |
-| Flash Memory | 0 bytes | varies |
+| Flash Memory | 4 bytes | varies |
 | DMA Memory | 303096 bytes | varies |
 
 ### คำถามวิเคราะห์ (ง่าย)
 
-1. **Memory Types**: SRAM และ Flash Memory ใช้เก็บข้อมูลประเภทไหน?
+1. **Memory Types**: SRAM และ Flash Memory ใช้เก็บข้อมูลประเภทไหน? <br>
 ตอบ SRAM ใช้เก็บข้อมูลชั่วคราวที่มีการเปลี่ยนแปลงตลอดเวลา ส่วนFlash Memory ใช้เก็บข้อมูลที่เป็นโปรแกรมหลัก
-2. **Address Ranges**: ตัวแปรแต่ละประเภทอยู่ใน address range ไหน?
+2. **Address Ranges**: ตัวแปรแต่ละประเภทอยู่ใน address range ไหน? <br>
 ตอบ Global / Static Initialized จะเก็บอยู่ในตัวแปร.data section
 Global / Static Uninitialized จะเก็บอยู่ในตัวแปร.bss section
 Code (function) จะเก็บอยู่ในตัวแปร.rodata
 const / read-only จะเก็บอยู่ในตัวแปร.text
-3. **Memory Usage**: ESP32 มี memory ทั้งหมดเท่าไร และใช้ไปเท่าไร?
+3. **Memory Usage**: ESP32 มี memory ทั้งหมดเท่าไร และใช้ไปเท่าไร? <br>
 ตอบ ESP32 มี memory ทั้งหมด 520 KB และใช้ไปทั้งหมด 77 KB
 
 ---
