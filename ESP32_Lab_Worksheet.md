@@ -592,20 +592,20 @@ void app_main() {
 
 | Test Type | Memory Type | Time (μs) | Ratio vs Sequential |
 |-----------|-------------|-----------|-------------------|
-| Sequential | Internal SRAM | _______ | 1.00x |
-| Random | Internal SRAM | _______ | ____x |
-| Sequential | External Memory | _______ | ____x |
-| Random | External Memory | _______ | ____x |
+| Sequential | Internal SRAM | 6116 μs | 1.01x |
+| Random | Internal SRAM | 6158 μs | 1.01x |
+| Sequential | External Memory | 20526 μs | 1.07x |
+| Random | External Memory | 21862 μs | 1.07x |
 
 **Table 3.2: Stride Access Performance**
 
 | Stride Size | Time (μs) | Ratio vs Stride 1 |
 |-------------|-----------|------------------|
-| 1 | _______ | 1.00x |
-| 2 | _______ | ____x |
-| 4 | _______ | ____x |
-| 8 | _______ | ____x |
-| 16 | _______ | ____x |
+| 1 | 5607 μs | 1.00x |
+| 2 | 2741 μs | 0.49x |
+| 4 | 1364 μs | 0.24x |
+| 8 | 775 μs | 0.14x |
+| 16 | 343 μs | 0.06x |
 
 ### คำถามวิเคราะห์
 
