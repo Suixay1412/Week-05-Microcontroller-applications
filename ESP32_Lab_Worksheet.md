@@ -227,10 +227,13 @@ mkdir -p main
 #include <string.h>
 #include <esp_system.h>
 #include <esp_heap_caps.h>
+#include <esp_attr.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 
 // Global variables in different memory sections
-static char sram_buffer[1024] __attribute__((section(".dram")));
-static const char flash_string[] __attribute__((section(".rodata"))) = "Hello from Flash Memory!";
+DRAM_ATTR static char sram_buffer[1024];  // Explicitly place in DRAM using ESP32 attribute
+static const char flash_string[] = "Hello from Flash Memory!";  // This will be in .rodata (Flash) automatically
 static char *heap_ptr;
 
 // Function to display memory information
@@ -267,17 +270,27 @@ void print_memory_info() {
 }
 
 void app_main() {
+    // เพิ่ม delay เล็กน้อยเพื่อให้ serial port พร้อม
+    vTaskDelay(100 / portTICK_PERIOD_MS);
+    
+    printf("=== ESP32 STARTING UP ===\n");
     printf("ESP32 Memory Architecture Analysis\n");
     printf("==================================\n");
+    
+    // Flush output buffer
+    fflush(stdout);
     
     // Test memory operations
     strcpy(sram_buffer, "SRAM Test Data");
     printf("Flash string: %s\n", flash_string);
     printf("SRAM buffer: %s\n", sram_buffer);
     
+    fflush(stdout);
+    
     print_memory_info();
     
     printf("\nMemory analysis complete!\n");
+    fflush(stdout);
 }
 ```
 
@@ -367,24 +380,30 @@ Memory analysis complete!
 
 | Memory Section | Variable/Function | Address (ที่แสดงออกมา) | Memory Type |
 |----------------|-------------------|----------------------|-------------|
-| Stack | stack_var | 0x_______ | SRAM |
-| Global SRAM | sram_buffer | 0x_______ | SRAM |
-| Flash | flash_string | 0x_______ | Flash |
-| Heap | heap_ptr | 0x_______ | SRAM |
+| Stack | stack_var | 0x3ffb4550 | SRAM |
+| Global SRAM | sram_buffer | 0x3ffb16ac | SRAM |
+| Flash | flash_string | 0x3f407b64 | Flash |
+| Heap | heap_ptr | 0x3ffb5264 | SRAM |
 
 **Table 2.2: Memory Usage Summary**
 
 | Memory Type | Free Size (bytes) | Total Size (bytes) |
 |-------------|-------------------|--------------------|
-| Internal SRAM | _________ | 520,192 |
-| Flash Memory | _________ | varies |
-| DMA Memory | _________ | varies |
+| Internal SRAM | 380096 bytes | 520,192 |
+| Flash Memory | 0 bytes | varies |
+| DMA Memory | 303096 bytes | varies |
 
 ### คำถามวิเคราะห์ (ง่าย)
 
 1. **Memory Types**: SRAM และ Flash Memory ใช้เก็บข้อมูลประเภทไหน?
+ตอบ SRAM ใช้เก็บข้อมูลชั่วคราวที่มีการเปลี่ยนแปลงตลอดเวลา ส่วนFlash Memory ใช้เก็บข้อมูลที่เป็นโปรแกรมหลัก
 2. **Address Ranges**: ตัวแปรแต่ละประเภทอยู่ใน address range ไหน?
+ตอบ Global / Static Initialized จะเก็บอยู่ในตัวแปร.data section
+Global / Static Uninitialized จะเก็บอยู่ในตัวแปร.bss section
+Code (function) จะเก็บอยู่ในตัวแปร.rodata
+const / read-only จะเก็บอยู่ในตัวแปร.text
 3. **Memory Usage**: ESP32 มี memory ทั้งหมดเท่าไร และใช้ไปเท่าไร?
+ตอบ ESP32 มี memory ทั้งหมด 520 KB และใช้ไปทั้งหมด 77 KB
 
 ---
 
